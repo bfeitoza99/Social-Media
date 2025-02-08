@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: social-media_db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: SocialMedia
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
