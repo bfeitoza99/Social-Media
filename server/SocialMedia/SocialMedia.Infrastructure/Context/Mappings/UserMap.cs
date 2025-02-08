@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.Infrastructure.Mappings
+namespace SocialMedia.Infrastructure.Context.Mappings
 {
-    public class UserMap: IEntityTypeConfiguration<User>
+    public class UserMap : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
@@ -21,9 +21,9 @@ namespace SocialMedia.Infrastructure.Mappings
             builder.Property(u => u.Name)
                 .HasMaxLength(50);
 
-            builder.Property(u=> u.ProfileImageUrl)
+            builder.Property(u => u.ProfileImageUrl)
                 .HasMaxLength(256);
-           
+
             builder.HasMany<Post>()
                 .WithOne()
                 .HasForeignKey(p => p.AuthorUserId)
@@ -35,6 +35,6 @@ namespace SocialMedia.Infrastructure.Mappings
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
-    
-    
+
+
 }
