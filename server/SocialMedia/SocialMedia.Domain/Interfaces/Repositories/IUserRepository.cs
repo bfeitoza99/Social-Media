@@ -3,7 +3,7 @@
 
 namespace SocialMedia.Domain.Interfaces.Repositories
 {
-    public interface IUser : IRepositoryBase<User>
+    public interface IUserRepository : IRepositoryBase<User>
     {
     }
 }

@@ -7,16 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialMedia.Infrastructure.Mappings
+namespace SocialMedia.Infrastructure.Context.Mappings
 {
     public class UserDailyPostLimitMap : IEntityTypeConfiguration<UserDailyPostLimit>
     {
         public void Configure(EntityTypeBuilder<UserDailyPostLimit> builder)
-        {
-            builder.HasKey(p => p.Id);
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+        {            
 
             builder.Property(u => u.PostCount)
                 .IsRequired();
@@ -31,6 +27,8 @@ namespace SocialMedia.Infrastructure.Mappings
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasKey(p => new { p.UserId, p.ReferenceDate });
         }
     }
 

@@ -2,18 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using SocialMedia.Domain.Entity;
 
-namespace SocialMedia.Infrastructure.Mappings
+namespace SocialMedia.Infrastructure.Context.Mappings
 {
     public class RepostHistoryMap : IEntityTypeConfiguration<RepostHistory>
     {
         public void Configure(EntityTypeBuilder<RepostHistory> builder)
         {
 
-            builder.HasKey(p => p.Id);
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
-
+            builder.HasKey(p => new { p.UserId, p.PostId });
 
             builder.Property(p => p.RepostDate)
                 .IsRequired()
@@ -22,15 +18,18 @@ namespace SocialMedia.Infrastructure.Mappings
             builder.Property(p => p.UserId)
                 .IsRequired();
 
-            builder.Property(p=> p.PostId)
+            builder.Property(p => p.PostId)
                 .IsRequired();
-
+           
             builder.HasOne<User>()
-                .WithOne();
-
+                .WithMany()  
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+           
             builder.HasOne<Post>()
-                .WithOne();
-
+                .WithMany()  
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

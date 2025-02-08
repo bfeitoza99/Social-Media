@@ -12,7 +12,7 @@ using SocialMedia.Infrastructure.Context;
 namespace SocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250208204704_Initial")]
+    [Migration("20250208234327_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -29,17 +29,18 @@ namespace SocialMedia.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("AuthorUsername")
+                    b.Property<string>("AuthorNickname")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<int>("AuthorUserId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -61,6 +62,8 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorNickname");
+
                     b.HasIndex("AuthorUserId");
 
                     b.ToTable("Posts");
@@ -68,11 +71,8 @@ namespace SocialMedia.Infrastructure.Migrations
 
             modelBuilder.Entity("SocialMedia.Domain.Entity.RepostHistory", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("PostId")
                         .HasColumnType("integer");
@@ -81,16 +81,9 @@ namespace SocialMedia.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.HasKey("UserId", "PostId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("PostId");
 
                     b.ToTable("RepostHistories");
                 });
@@ -105,6 +98,11 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
@@ -115,6 +113,9 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Nickname")
+                        .IsUnique();
+
                     b.ToTable("Users");
 
                     b.HasData(
@@ -122,54 +123,57 @@ namespace SocialMedia.Infrastructure.Migrations
                         {
                             Id = 1,
                             Name = "Alice Johnson",
-                            ProfileImageUrl = "https://example.com/profiles/alice.jpg"
+                            Nickname = "@AliceJohnson",
+                            ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Alice"
                         },
                         new
                         {
                             Id = 2,
                             Name = "Bob Smith",
-                            ProfileImageUrl = "https://example.com/profiles/bob.jpg"
+                            Nickname = "@BobSmith",
+                            ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Bob"
                         },
                         new
                         {
                             Id = 3,
                             Name = "Charlie Brown",
-                            ProfileImageUrl = "https://example.com/profiles/charlie.jpg"
+                            Nickname = "@CharlieBrown",
+                            ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie"
                         },
                         new
                         {
                             Id = 4,
                             Name = "Diana Prince",
-                            ProfileImageUrl = "https://example.com/profiles/diana.jpg"
+                            Nickname = "@DianaPrince",
+                            ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Diana"
                         });
                 });
 
             modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostLimit", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PostCount")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.Property<DateOnly>("ReferenceDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("PostCount")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "ReferenceDate");
 
                     b.ToTable("UserDailyPostLimits");
                 });
 
             modelBuilder.Entity("SocialMedia.Domain.Entity.Post", b =>
                 {
+                    b.HasOne("SocialMedia.Domain.Entity.User", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorNickname")
+                        .HasPrincipalKey("Nickname")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SocialMedia.Domain.Entity.User", null)
                         .WithMany()
                         .HasForeignKey("AuthorUserId")
@@ -180,14 +184,14 @@ namespace SocialMedia.Infrastructure.Migrations
             modelBuilder.Entity("SocialMedia.Domain.Entity.RepostHistory", b =>
                 {
                     b.HasOne("SocialMedia.Domain.Entity.Post", null)
-                        .WithOne()
-                        .HasForeignKey("SocialMedia.Domain.Entity.RepostHistory", "PostId")
+                        .WithMany()
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialMedia.Domain.Entity.User", null)
-                        .WithOne()
-                        .HasForeignKey("SocialMedia.Domain.Entity.RepostHistory", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

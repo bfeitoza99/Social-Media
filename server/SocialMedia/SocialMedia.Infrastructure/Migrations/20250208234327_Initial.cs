@@ -20,12 +20,14 @@ namespace SocialMedia.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Nickname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ProfileImageUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.UniqueConstraint("AK_Users_Nickname", x => x.Nickname);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,7 +37,7 @@ namespace SocialMedia.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "character varying(777)", maxLength: 777, nullable: false),
-                    AuthorUsername = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    AuthorNickname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     AuthorUserId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RepostCount = table.Column<int>(type: "integer", nullable: false),
@@ -45,6 +47,12 @@ namespace SocialMedia.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_Users_AuthorNickname",
+                        column: x => x.AuthorNickname,
+                        principalTable: "Users",
+                        principalColumn: "Nickname",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Posts_Users_AuthorUserId",
                         column: x => x.AuthorUserId,
@@ -57,15 +65,13 @@ namespace SocialMedia.Infrastructure.Migrations
                 name: "UserDailyPostLimits",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    PostCount = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    ReferenceDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    PostCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDailyPostLimits", x => x.Id);
+                    table.PrimaryKey("PK_UserDailyPostLimits", x => new { x.UserId, x.ReferenceDate });
                     table.ForeignKey(
                         name: "FK_UserDailyPostLimits_Users_UserId",
                         column: x => x.UserId,
@@ -78,15 +84,13 @@ namespace SocialMedia.Infrastructure.Migrations
                 name: "RepostHistories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     PostId = table.Column<int>(type: "integer", nullable: false),
                     RepostDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RepostHistories", x => x.Id);
+                    table.PrimaryKey("PK_RepostHistories", x => new { x.UserId, x.PostId });
                     table.ForeignKey(
                         name: "FK_RepostHistories_Posts_PostId",
                         column: x => x.PostId,
@@ -103,14 +107,19 @@ namespace SocialMedia.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Name", "ProfileImageUrl" },
+                columns: new[] { "Id", "Name", "Nickname", "ProfileImageUrl" },
                 values: new object[,]
                 {
-                    { 1, "Alice Johnson", "https://example.com/profiles/alice.jpg" },
-                    { 2, "Bob Smith", "https://example.com/profiles/bob.jpg" },
-                    { 3, "Charlie Brown", "https://example.com/profiles/charlie.jpg" },
-                    { 4, "Diana Prince", "https://example.com/profiles/diana.jpg" }
+                    { 1, "Alice Johnson", "@AliceJohnson", "https://api.dicebear.com/7.x/adventurer/svg?seed=Alice" },
+                    { 2, "Bob Smith", "@BobSmith", "https://api.dicebear.com/7.x/adventurer/svg?seed=Bob" },
+                    { 3, "Charlie Brown", "@CharlieBrown", "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie" },
+                    { 4, "Diana Prince", "@DianaPrince", "https://api.dicebear.com/7.x/adventurer/svg?seed=Diana" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_AuthorNickname",
+                table: "Posts",
+                column: "AuthorNickname");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorUserId",
@@ -120,19 +129,13 @@ namespace SocialMedia.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RepostHistories_PostId",
                 table: "RepostHistories",
-                column: "PostId",
-                unique: true);
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RepostHistories_UserId",
-                table: "RepostHistories",
-                column: "UserId",
+                name: "IX_Users_Nickname",
+                table: "Users",
+                column: "Nickname",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserDailyPostLimits_UserId",
-                table: "UserDailyPostLimits",
-                column: "UserId");
         }
 
         /// <inheritdoc />

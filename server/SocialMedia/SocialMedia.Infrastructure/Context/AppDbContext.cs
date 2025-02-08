@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMedia.Domain.Entity;
-using SocialMedia.Infrastructure.Mappings;
+using SocialMedia.Infrastructure.Context.Mappings;
 
 namespace SocialMedia.Infrastructure.Context
 {
@@ -23,31 +23,35 @@ namespace SocialMedia.Infrastructure.Context
 
 
             modelBuilder.Entity<User>().HasData(
-                 new User
-                 {
-                     Id = 1,
-                     Name = "Alice Johnson",
-                     ProfileImageUrl = "https://example.com/profiles/alice.jpg"
-                 },
-                 new User
-                 {
-                     Id = 2,
-                     Name = "Bob Smith",
-                     ProfileImageUrl = "https://example.com/profiles/bob.jpg"
-                 },
-                 new User
-                 {
-                     Id = 3,
-                     Name = "Charlie Brown",
-                     ProfileImageUrl = "https://example.com/profiles/charlie.jpg"
-                 },
-                 new User
-                 {
-                     Id = 4,
-                     Name = "Diana Prince",
-                     ProfileImageUrl = "https://example.com/profiles/diana.jpg"
-                 }
-             );
+                new User
+                {
+                    Id = 1,
+                    Name = "Alice Johnson",
+                    Nickname = "@AliceJohnson",
+                    ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Alice"
+                },
+                new User
+                {
+                    Id = 2,
+                    Name = "Bob Smith",
+                    Nickname = "@BobSmith",
+                    ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Bob"
+                },
+                new User
+                {
+                    Id = 3,
+                    Name = "Charlie Brown",
+                    Nickname = "@CharlieBrown",
+                    ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie"
+                },
+                new User
+                {
+                    Id = 4,
+                    Name = "Diana Prince",
+                    Nickname = "@DianaPrince",
+                    ProfileImageUrl = "https://api.dicebear.com/7.x/adventurer/svg?seed=Diana"
+                }
+            );
 
             base.OnModelCreating(modelBuilder);
         }

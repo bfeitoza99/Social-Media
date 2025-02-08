@@ -19,7 +19,13 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .ValueGeneratedOnAdd();
 
             builder.Property(u => u.Name)
+               .HasMaxLength(100);
+
+            builder.Property(u => u.Nickname)                
                 .HasMaxLength(50);
+
+            builder.HasIndex(u => u.Nickname) 
+                .IsUnique();
 
             builder.Property(u => u.ProfileImageUrl)
                 .HasMaxLength(256);

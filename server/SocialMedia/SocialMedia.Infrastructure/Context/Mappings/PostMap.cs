@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SocialMedia.Domain.Entity;
 
 
-namespace SocialMedia.Infrastructure.Mappings
+namespace SocialMedia.Infrastructure.Context.Mappings
 {
     public class PostMap : IEntityTypeConfiguration<Post>
     {
@@ -20,7 +20,7 @@ namespace SocialMedia.Infrastructure.Mappings
                 .IsRequired()
                 .HasMaxLength(777);
 
-            builder.Property(p => p.AuthorUsername)
+            builder.Property(p => p.AuthorNickname)
                 .IsRequired()
                 .HasMaxLength(50);
 
@@ -44,6 +44,13 @@ namespace SocialMedia.Infrastructure.Mappings
                 .WithMany()
                 .HasForeignKey(p => p.AuthorUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(p => p.AuthorNickname)
+                .HasPrincipalKey(u => u.Nickname) 
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 
