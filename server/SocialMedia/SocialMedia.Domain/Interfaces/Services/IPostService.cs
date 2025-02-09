@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SocialMedia.Domain.DTO;
 
 namespace SocialMedia.Domain.Interfaces.Services
 {
     public interface IPostService
     {
 
-        Task AddPostAsync();
+        Task AddPostAsync(CreatePostDTO createPostDTO);
 
 
-        Task AddRepostAsync();
+        Task AddRepostAsync(RepostDTO repostDTO);
+     
     }
 }

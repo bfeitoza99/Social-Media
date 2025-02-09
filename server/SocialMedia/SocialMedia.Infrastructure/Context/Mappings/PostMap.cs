@@ -51,6 +51,11 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .HasPrincipalKey(u => u.Nickname) 
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(p => p.OriginalPost)
+                .WithMany()
+                .HasForeignKey(p => p.OriginalPostId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 

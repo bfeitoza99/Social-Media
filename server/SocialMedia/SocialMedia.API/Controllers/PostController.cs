@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SocialMedia.Domain.DTO;
 using SocialMedia.Domain.Interfaces.Services;
 
 namespace SocialMedia.API.Controllers
@@ -15,16 +16,20 @@ namespace SocialMedia.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromServices] IPostService postService)
+        public async Task<IActionResult> Post(
+            [FromServices] IPostService postService, 
+            [FromBody] CreatePostDTO model)
         {
-            await postService.AddPostAsync();
+            await postService.AddPostAsync(model);
             return Ok();
         }
 
         [HttpPost("repost")]
-        public async Task<IActionResult> PostRepost([FromServices] IPostService postService)
+        public async Task<IActionResult> Repost(
+            [FromServices] IPostService postService,
+            [FromBody] RepostDTO model)
         {
-            await postService.AddRepostAsync();
+            await postService.AddRepostAsync(model);
             return Ok();
         }
 

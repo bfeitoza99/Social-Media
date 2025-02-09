@@ -12,6 +12,8 @@ namespace SocialMedia.Domain.Entity
         public bool IsRepost { get;  set; } = false;
         public int? OriginalPostId { get;  set; }
 
+        public virtual Post? OriginalPost { get; set; }
+
         public Post()
         {
         }

@@ -1,4 +1,7 @@
-﻿using SocialMedia.Domain.Entity;
+﻿using MediatR;
+using SocialMedia.Application.Events;
+using SocialMedia.Domain.DTO;
+using SocialMedia.Domain.Entity;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
 using System;
@@ -14,77 +17,83 @@ namespace SocialMedia.Application.Services
         private readonly IUserDailyPostLimitService _userDailyPostLimitService;
         private readonly IPostRepository _postRepository;
         private readonly IRepostHistoryService _repostHistoryService;
+        private readonly IMediator _mediator;
+        private readonly DateOnly _currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+
+        private readonly int _dailyPostLimit;
 
         public PostService(IUserDailyPostLimitService userDailyPostLimitService, 
             IPostRepository postRepository, 
-            IRepostHistoryService repostHistoryService)
+            IRepostHistoryService repostHistoryService,
+            IMediator mediator)
         {
             _userDailyPostLimitService = userDailyPostLimitService;
             _postRepository = postRepository;
             _repostHistoryService = repostHistoryService;
+            _mediator = mediator;
+            _dailyPostLimit = 5;
         }
 
-        public async Task AddPostAsync()
+        public async Task AddPostAsync(CreatePostDTO createPostDTO)
         {
-            var userDailyLimit = await _userDailyPostLimitService.FindUserLimitByReferenceDateAsync(1, DateOnly.FromDateTime(DateTime.Now));
-            if (userDailyLimit != null && userDailyLimit.PostCount >= 5)
+            var userDailyLimit = await FindDailyPostLimit(createPostDTO.AuthorUserId);
+
+            if (userDailyLimit != null && userDailyLimit.PostCount >= _dailyPostLimit)
             {
                 return;
             }
 
             await _postRepository.AddAsync(new Post
             {
-                AuthorNickname = "@AliceJohnson",
-                AuthorUserId = 2,
-                Content = "Joe Doe",
-                IsRepost = false,
-                RepostCount = 0,
+                AuthorNickname = createPostDTO.AuthorNickname,
+                AuthorUserId = createPostDTO.AuthorUserId,
+                Content = createPostDTO.Content,          
             });
 
-            await _userDailyPostLimitService.UpsertAsync(2, DateOnly.FromDateTime(DateTime.Now));
+            await _mediator.Publish(new UpdateDailyPostLimitEvent(createPostDTO.AuthorUserId, _currentDate));           
         }
 
 
-        public async Task AddRepostAsync()
-        {
+        public async Task AddRepostAsync(RepostDTO repostDTO)
+        {            
+            var userDailyLimit = await FindDailyPostLimit(repostDTO.AuthorUserId);
 
-            int originalPostId = 1;
-            int userId = 1;
-            var userDailyLimit = await _userDailyPostLimitService.FindUserLimitByReferenceDateAsync(1, DateOnly.FromDateTime(DateTime.Now));
             if (userDailyLimit != null && userDailyLimit.PostCount >= 5)
             {
                 return;
             }
 
-            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(userId, originalPostId);
+            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(repostDTO.AuthorUserId, repostDTO.OriginalPostId);
 
-            if(existedRepost != null)
+            if (existedRepost != null)
             {
                 return;
-            }        
+            }
 
             await _postRepository.AddAsync(new Post
             {
                 AuthorNickname = "@AliceJohnson",
-                AuthorUserId = userId,
+                AuthorUserId = repostDTO.AuthorUserId,
                 Content = "Joe Doe",
                 IsRepost = true,
-                RepostCount = 0,
-                OriginalPostId = originalPostId,
+                OriginalPostId = repostDTO.OriginalPostId,
             });
 
-            await _repostHistoryService.AddAsync(new RepostHistory
-            {
-                PostId = originalPostId,
-                UserId = userId,
-            });
-
-            await _postRepository.IncrementRepostCountAsync(originalPostId);
-
-            await _userDailyPostLimitService.UpsertAsync(1, DateOnly.FromDateTime(DateTime.Now));
-
+            await PublishRepostEvents(repostDTO.OriginalPostId, repostDTO.AuthorUserId);
 
         }
 
+        private async Task<UserDailyPostLimit> FindDailyPostLimit(int  userAuthorId)
+        {           
+            return await _userDailyPostLimitService.FindUserLimitByReferenceDateAsync(userAuthorId, _currentDate);
+        }
+
+        private async Task PublishRepostEvents(int originalPostId, int userId)
+        {
+            await _mediator.Publish(new UpdateDailyPostLimitEvent(2, _currentDate));
+            await _mediator.Publish(new UpdateRepostCountEvent(originalPostId));
+            await _mediator.Publish(new UpdateRepostHistoryEvent(userId, originalPostId));
+        }
     }
 }
