@@ -8,7 +8,7 @@ namespace SocialMedia.Domain.Interfaces.Services
         Task AddPostAsync(CreatePostDTO createPostDTO);
 
 
-        Task AddRepostAsync(int originalPostId, RepostDTO repostDTO);
+        Task AddRepostAsync(int originalPostId, CreateRepostDTO repostDTO);
      
     }
 }

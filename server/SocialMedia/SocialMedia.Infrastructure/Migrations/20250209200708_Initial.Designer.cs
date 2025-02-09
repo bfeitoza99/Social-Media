@@ -12,7 +12,7 @@ using SocialMedia.Infrastructure.Context;
 namespace SocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250209160921_Initial")]
+    [Migration("20250209200708_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace SocialMedia.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.Post", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,11 +33,6 @@ namespace SocialMedia.Infrastructure.Migrations
                         .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AuthorNickname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("AuthorUserId")
                         .HasColumnType("integer");
@@ -49,7 +44,8 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp(3)")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<bool>("IsRepost")
                         .HasColumnType("boolean");
@@ -62,8 +58,6 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorNickname");
-
                     b.HasIndex("AuthorUserId");
 
                     b.HasIndex("OriginalPostId");
@@ -71,7 +65,7 @@ namespace SocialMedia.Infrastructure.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.RepostHistory", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.RepostHistory", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -90,7 +84,7 @@ namespace SocialMedia.Infrastructure.Migrations
                     b.ToTable("RepostHistories");
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.User", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +145,7 @@ namespace SocialMedia.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostCount", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.UserDailyPostCount", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -167,51 +161,55 @@ namespace SocialMedia.Infrastructure.Migrations
                     b.ToTable("UserDailyPostCounts");
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.Post", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.Post", b =>
                 {
-                    b.HasOne("SocialMedia.Domain.Entity.User", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorNickname")
-                        .HasPrincipalKey("Nickname")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialMedia.Domain.Entity.User", null)
-                        .WithMany()
+                    b.HasOne("SocialMedia.Domain.Entities.User", "User")
+                        .WithMany("Posts")
                         .HasForeignKey("AuthorUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialMedia.Domain.Entity.Post", "OriginalPost")
+                    b.HasOne("SocialMedia.Domain.Entities.Post", "OriginalPost")
                         .WithMany()
                         .HasForeignKey("OriginalPostId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("OriginalPost");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.RepostHistory", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.RepostHistory", b =>
                 {
-                    b.HasOne("SocialMedia.Domain.Entity.Post", null)
+                    b.HasOne("SocialMedia.Domain.Entities.Post", null)
                         .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialMedia.Domain.Entity.User", null)
+                    b.HasOne("SocialMedia.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostCount", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entities.UserDailyPostCount", b =>
                 {
-                    b.HasOne("SocialMedia.Domain.Entity.User", null)
-                        .WithMany()
+                    b.HasOne("SocialMedia.Domain.Entities.User", "User")
+                        .WithMany("DailyPostCounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialMedia.Domain.Entities.User", b =>
+                {
+                    b.Navigation("DailyPostCounts");
+
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

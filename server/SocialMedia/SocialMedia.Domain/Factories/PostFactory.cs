@@ -9,18 +9,17 @@ namespace SocialMedia.Infrastructure.Factories
         public Post CreatePost(CreatePostDTO model)
         {
             return new Post
-            {
-                AuthorNickname = model.AuthorNickname,
+            {                
                 AuthorUserId = model.AuthorUserId,
-                Content = model.Content,             
+                Content = model.Content           
+            
             };
         }
 
-        public Post CreateRepost(int originalPostId, RepostDTO model)
+        public Post CreateRepost(int originalPostId, CreateRepostDTO model)
         {
             return new Post
-            {
-                AuthorNickname = model.AuthorNickname,
+            {              
                 AuthorUserId = model.AuthorUserId,
                 Content =  "",
                 IsRepost = true,

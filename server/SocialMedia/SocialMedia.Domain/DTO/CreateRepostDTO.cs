@@ -1,9 +1,8 @@
 ﻿
 namespace SocialMedia.Domain.DTO
 {
-    public class RepostDTO
-    {      
-        public string AuthorNickname { get; set; }
+    public class CreateRepostDTO
+    {        
         public int AuthorUserId { get; set; }    
     }
 }

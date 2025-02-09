@@ -8,6 +8,9 @@ namespace SocialMedia.Domain.Entities
         public string Name { get; set; }
         public string ProfileImageUrl{ get; set; }
 
+        public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+        public virtual ICollection<UserDailyPostCount> DailyPostCounts { get; set; } = new List<UserDailyPostCount>();
+
         public User()
         {
 

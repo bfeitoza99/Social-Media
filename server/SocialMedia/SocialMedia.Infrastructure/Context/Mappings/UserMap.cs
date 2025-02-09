@@ -26,15 +26,15 @@ namespace SocialMedia.Infrastructure.Context.Mappings
             builder.Property(u => u.ProfileImageUrl)
                 .HasMaxLength(256);
 
-            builder.HasMany<Post>()
-                .WithOne()
-                .HasForeignKey(p => p.AuthorUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.Posts)
+               .WithOne(p => p.User)
+               .HasForeignKey(p => p.AuthorUserId)
+               .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany<UserDailyPostCount>()
-                .WithOne()
-                .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.DailyPostCounts)
+                  .WithOne(d => d.User)
+                  .HasForeignKey(d => d.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

@@ -17,12 +17,7 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .IsRequired();
 
             builder.Property(p => p.UserId)
-               .IsRequired();
-
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+               .IsRequired();      
 
             builder.HasKey(p => new { p.UserId, p.ReferenceDate });
         }

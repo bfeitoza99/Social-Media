@@ -6,5 +6,7 @@ namespace SocialMedia.Domain.Entities
         public int UserId { get; set; }
         public int PostCount { get; set; } = 0;
         public DateOnly ReferenceDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        public virtual User User { get; set; }
     }
 }

@@ -27,7 +27,6 @@ namespace SocialMedia.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.UniqueConstraint("AK_Users_Nickname", x => x.Nickname);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,9 +36,8 @@ namespace SocialMedia.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "character varying(777)", maxLength: 777, nullable: false),
-                    AuthorNickname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     AuthorUserId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false, defaultValueSql: "NOW()"),
                     RepostCount = table.Column<int>(type: "integer", nullable: false),
                     IsRepost = table.Column<bool>(type: "boolean", nullable: false),
                     OriginalPostId = table.Column<int>(type: "integer", nullable: true)
@@ -53,12 +51,6 @@ namespace SocialMedia.Infrastructure.Migrations
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_Users_AuthorNickname",
-                        column: x => x.AuthorNickname,
-                        principalTable: "Users",
-                        principalColumn: "Nickname",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Posts_Users_AuthorUserId",
                         column: x => x.AuthorUserId,
@@ -121,11 +113,6 @@ namespace SocialMedia.Infrastructure.Migrations
                     { 3, "Charlie Brown", "@CharlieBrown", "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie" },
                     { 4, "Diana Prince", "@DianaPrince", "https://api.dicebear.com/7.x/adventurer/svg?seed=Diana" }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_AuthorNickname",
-                table: "Posts",
-                column: "AuthorNickname");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorUserId",

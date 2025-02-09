@@ -11,6 +11,6 @@ namespace SocialMedia.Domain.Interfaces.Factories
     public interface IPostFactory
     {
         Post CreatePost(CreatePostDTO model);
-        Post CreateRepost(int originalPostid, RepostDTO model);
+        Post CreateRepost(int originalPostid, CreateRepostDTO model);
     }
 }

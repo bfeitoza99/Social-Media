@@ -20,13 +20,11 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .IsRequired()
                 .HasMaxLength(777);
 
-            builder.Property(p => p.AuthorNickname)
-                .IsRequired()
-                .HasMaxLength(50);
-
             builder.Property(p => p.CreatedAt)
-                .IsRequired()
-                .ValueGeneratedOnAdd();
+                .HasColumnType("timestamp(3)")
+                .HasDefaultValueSql("NOW()") 
+                .IsRequired();
+
 
             builder.Property(p => p.RepostCount)
                 .IsRequired();
@@ -38,18 +36,12 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .IsRequired(false);
 
             builder.Property(p => p.AuthorUserId)
-               .IsRequired();
+               .IsRequired();         
 
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(p => p.AuthorUserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(p => p.AuthorNickname)
-                .HasPrincipalKey(u => u.Nickname) 
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.User)
+                 .WithMany(u => u.Posts)
+                 .HasForeignKey(p => p.AuthorUserId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.OriginalPost)
                 .WithMany()

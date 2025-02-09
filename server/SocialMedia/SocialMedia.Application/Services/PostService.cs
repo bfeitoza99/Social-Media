@@ -46,7 +46,7 @@ namespace SocialMedia.Application.Services
             await _mediator.Publish(new UpdateDailyPostCountEvent(createPostDTO.AuthorUserId, _currentDate));
         }     
 
-        public async Task AddRepostAsync(int originalPostId, RepostDTO repostDTO)
+        public async Task AddRepostAsync(int originalPostId, CreateRepostDTO repostDTO)
         {
             await ValidateDailyPostLimit(repostDTO.AuthorUserId);
             await ValidateRepost(originalPostId , repostDTO);
@@ -64,7 +64,7 @@ namespace SocialMedia.Application.Services
             await _mediator.Publish(new UpdateRepostHistoryEvent(userId, originalPostId));
         }
 
-        private async Task ValidateRepost(int originalPostId,  RepostDTO repostDTO)
+        private async Task ValidateRepost(int originalPostId,  CreateRepostDTO repostDTO)
         {
             var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(repostDTO.AuthorUserId, originalPostId);
 

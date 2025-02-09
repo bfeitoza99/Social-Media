@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialMedia.Domain.DTO;
+using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
 
 namespace SocialMedia.API.Controllers
@@ -9,19 +10,32 @@ namespace SocialMedia.API.Controllers
     public class PostController : Controller
     {
         [HttpGet]
-        public IActionResult Index()
+        [ProducesResponseType<PaginatedResult<PostResponseDTO>>(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPosts(
+            [FromServices] IPostRepository postRepository,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 15,
+            [FromQuery] string? keyword = null,
+            [FromQuery] string orderBy = "latest")
         {
-            return Ok();
+            var result = await postRepository
+                .SetKeyword(keyword)
+                .SetPageSize(pageSize)
+                .SetPage(page)
+                .SetOrderBy(orderBy)
+                .GetPostsAsync();
+
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(
-            [FromServices] IPostService postService,          
+            [FromServices] IPostService postService,
             [FromBody] CreatePostDTO model
             )
         {
             if (!ModelState.IsValid)
-                return this.BadFormatModelStateResult();            
+                return this.BadFormatModelStateResult();
 
             await postService.AddPostAsync(model);
 
@@ -32,7 +46,7 @@ namespace SocialMedia.API.Controllers
         public async Task<IActionResult> Repost(
             [FromServices] IPostService postService,
             [FromRoute] int originalPostId,
-            [FromBody] RepostDTO model)
+            [FromBody] CreateRepostDTO model)
         {
             if (!ModelState.IsValid)
                 return this.BadFormatModelStateResult();
