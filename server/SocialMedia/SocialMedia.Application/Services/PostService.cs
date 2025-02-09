@@ -2,14 +2,10 @@
 using SocialMedia.Application.Events;
 using SocialMedia.Domain.DTO;
 using SocialMedia.Domain.Entities;
+using SocialMedia.Domain.Exceptions;
 using SocialMedia.Domain.Interfaces.Factories;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMedia.Application.Services
 {
@@ -43,51 +39,55 @@ namespace SocialMedia.Application.Services
 
         public async Task AddPostAsync(CreatePostDTO createPostDTO)
         {
-            var userDailyLimit = await FindDailyPostLimit(createPostDTO.AuthorUserId);
-
-            if (userDailyLimit != null && userDailyLimit.PostCount >= _dailyPostLimit)
-            {
-                return;
-            }
+            await ValidateDailyPostLimit(createPostDTO.AuthorUserId);
 
             await _postRepository.AddAsync(_postFactory.CreatePost(createPostDTO));
 
-            await _mediator.Publish(new UpdateDailyPostCountEvent(createPostDTO.AuthorUserId, _currentDate));           
-        }
+            await _mediator.Publish(new UpdateDailyPostCountEvent(createPostDTO.AuthorUserId, _currentDate));
+        }     
 
+        public async Task AddRepostAsync(int originalPostId, RepostDTO repostDTO)
+        {
+            await ValidateDailyPostLimit(repostDTO.AuthorUserId);
+            await ValidateRepost(originalPostId , repostDTO);
 
-        public async Task AddRepostAsync(RepostDTO repostDTO)
-        {            
-            var userDailyLimit = await FindDailyPostLimit(repostDTO.AuthorUserId);
+            await _postRepository.AddAsync(_postFactory.CreateRepost(originalPostId, repostDTO));
 
-            if (userDailyLimit != null && userDailyLimit.PostCount >= 5)
-            {
-                return;
-            }
-
-            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(repostDTO.AuthorUserId, repostDTO.OriginalPostId);
-
-            if (existedRepost != null)
-            {
-                return;
-            }
-
-            await _postRepository.AddAsync(_postFactory.CreateRepost(repostDTO));
-
-            await PublishRepostEvents(repostDTO.OriginalPostId, repostDTO.AuthorUserId);
+            await PublishRepostEvents(originalPostId, repostDTO.AuthorUserId);
 
         }
-
-        private async Task<UserDailyPostCount> FindDailyPostLimit(int  userAuthorId)
-        {           
-            return await _userDailyPostLimitService.FindUserLimitByReferenceDateAsync(userAuthorId, _currentDate);
-        }
-
+       
         private async Task PublishRepostEvents(int originalPostId, int userId)
         {
             await _mediator.Publish(new UpdateDailyPostCountEvent(userId, _currentDate));
             await _mediator.Publish(new UpdateRepostCountEvent(originalPostId));
             await _mediator.Publish(new UpdateRepostHistoryEvent(userId, originalPostId));
         }
+
+        private async Task ValidateRepost(int originalPostId,  RepostDTO repostDTO)
+        {
+            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(repostDTO.AuthorUserId, originalPostId);
+
+            if (existedRepost != null)
+            {
+                throw new RepostNotAllowedException();
+            }
+        }
+
+        private async Task<UserDailyPostCount> FindDailyPostLimit(int userAuthorId)
+        {
+            return await _userDailyPostLimitService.FindUserLimitByReferenceDateAsync(userAuthorId, _currentDate);
+        }
+
+        private async Task ValidateDailyPostLimit(int userId)
+        {
+            var userDailyLimit = await FindDailyPostLimit(userId);
+
+            if (userDailyLimit != null && userDailyLimit.PostCount >= _dailyPostLimit)
+            {
+                throw new DailyPostLimitExceededException();
+            }
+        }
+
     }
 }

@@ -3,8 +3,9 @@ using SocialMedia.Domain.Interfaces.Repositories;
 
 namespace SocialMedia.API.Controllers
 {
+    [ApiController]
     [Produces("application/json")]
-    [Route("api/users")]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         [HttpGet]

@@ -16,14 +16,15 @@ namespace SocialMedia.Infrastructure.Factories
             };
         }
 
-        public Post CreateRepost(RepostDTO model)
+        public Post CreateRepost(int originalPostId, RepostDTO model)
         {
             return new Post
             {
                 AuthorNickname = model.AuthorNickname,
                 AuthorUserId = model.AuthorUserId,
+                Content =  "",
                 IsRepost = true,
-                OriginalPostId = model.OriginalPostId
+                OriginalPostId = originalPostId
             };
         }
     }
