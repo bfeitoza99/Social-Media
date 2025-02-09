@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using SocialMedia.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SocialMedia.Domain.Entities;
+
 
 namespace SocialMedia.Infrastructure.Context.Mappings
 {
@@ -35,7 +31,7 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .HasForeignKey(p => p.AuthorUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany<UserDailyPostLimit>()
+            builder.HasMany<UserDailyPostCount>()
                 .WithOne()
                 .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

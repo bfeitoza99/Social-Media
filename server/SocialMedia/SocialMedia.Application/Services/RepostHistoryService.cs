@@ -1,11 +1,7 @@
-﻿using SocialMedia.Domain.Entity;
+﻿using SocialMedia.Domain.Entities;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SocialMedia.Application.Services
 {

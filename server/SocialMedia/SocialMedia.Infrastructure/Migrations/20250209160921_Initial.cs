@@ -48,6 +48,12 @@ namespace SocialMedia.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Posts_Posts_OriginalPostId",
+                        column: x => x.OriginalPostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Posts_Users_AuthorNickname",
                         column: x => x.AuthorNickname,
                         principalTable: "Users",
@@ -62,7 +68,7 @@ namespace SocialMedia.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDailyPostLimits",
+                name: "UserDailyPostCounts",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
@@ -71,9 +77,9 @@ namespace SocialMedia.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDailyPostLimits", x => new { x.UserId, x.ReferenceDate });
+                    table.PrimaryKey("PK_UserDailyPostCounts", x => new { x.UserId, x.ReferenceDate });
                     table.ForeignKey(
-                        name: "FK_UserDailyPostLimits_Users_UserId",
+                        name: "FK_UserDailyPostCounts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -127,6 +133,11 @@ namespace SocialMedia.Infrastructure.Migrations
                 column: "AuthorUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Posts_OriginalPostId",
+                table: "Posts",
+                column: "OriginalPostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RepostHistories_PostId",
                 table: "RepostHistories",
                 column: "PostId");
@@ -145,7 +156,7 @@ namespace SocialMedia.Infrastructure.Migrations
                 name: "RepostHistories");
 
             migrationBuilder.DropTable(
-                name: "UserDailyPostLimits");
+                name: "UserDailyPostCounts");
 
             migrationBuilder.DropTable(
                 name: "Posts");

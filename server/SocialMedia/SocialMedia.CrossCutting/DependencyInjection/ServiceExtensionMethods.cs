@@ -13,7 +13,7 @@ namespace SocialMedia.CrossCutting.DependencyInjection
         public static IServiceCollection AddServices(this IServiceCollection services) =>
 
                 services.AddScoped<IPostService, PostService>()
-                .AddScoped<IUserDailyPostLimitService, UserDailyPostLimitService>()
+                .AddScoped<IUserDailyPostCountService, UserDailyPostLimitService>()
                 .AddScoped<IRepostHistoryService, RepostHistoryService>();
     }
 }

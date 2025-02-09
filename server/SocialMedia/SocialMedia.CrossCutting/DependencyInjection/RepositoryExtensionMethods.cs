@@ -12,6 +12,6 @@ namespace SocialMedia.CrossCutting.DependencyInjection
                 services.AddScoped<IPostRepository, PostRepository>()
                 .AddScoped<IRepostHistoryRepository, RepostHistoryRepository>()
                 .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<IUserDailyPostLimitRepository, UserDailyPostLimitRepository>();        
+                .AddScoped<IUserDailyPostCountRepository, UserDailyPostCountRepository>();        
     }
 }

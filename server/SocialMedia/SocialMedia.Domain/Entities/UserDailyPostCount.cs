@@ -1,7 +1,7 @@
 ﻿
-namespace SocialMedia.Domain.Entity
+namespace SocialMedia.Domain.Entities
 {
-    public class UserDailyPostLimit
+    public class UserDailyPostCount
     {       
         public int UserId { get; set; }
         public int PostCount { get; set; } = 0;

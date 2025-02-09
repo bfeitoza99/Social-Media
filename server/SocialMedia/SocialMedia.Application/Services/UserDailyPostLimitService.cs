@@ -1,25 +1,21 @@
-﻿using SocialMedia.Domain.Entity;
+﻿using SocialMedia.Domain.Entities;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SocialMedia.Application.Services
 {
-    public class UserDailyPostLimitService: IUserDailyPostLimitService
+    public class UserDailyPostLimitService: IUserDailyPostCountService
     {
-        private readonly IUserDailyPostLimitRepository _userDailyPostLimitRepository;
-        public UserDailyPostLimitService(IUserDailyPostLimitRepository userDailyPostLimitRepository) 
+        private readonly IUserDailyPostCountRepository _userDailyPostLimitRepository;
+        public UserDailyPostLimitService(IUserDailyPostCountRepository userDailyPostLimitRepository) 
         {         
             _userDailyPostLimitRepository = userDailyPostLimitRepository;
         }
 
-        public async Task<UserDailyPostLimit> FindUserLimitByReferenceDateAsync(int userId, DateOnly date)
+        public async Task<UserDailyPostCount> FindUserLimitByReferenceDateAsync(int userId, DateOnly date)
         {
-            return await _userDailyPostLimitRepository.FindUserLimitByReferenceDateAsync(userId, date);
+            return await _userDailyPostLimitRepository.FindUserPostCountByReferenceDateAsync(userId, date);
         }
 
         public async Task UpsertAsync(int userId, DateOnly date)

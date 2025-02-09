@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SocialMedia.Application.Events;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Infrastructure.Context.Repositories;
 using System;
@@ -14,7 +15,7 @@ namespace SocialMedia.CrossCutting.DependencyInjection
     {
         public static IServiceCollection AddEvents(this IServiceCollection services) =>
 
-              services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+              services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UpdateDailyPostCountEvent).Assembly));
     }
 }
 

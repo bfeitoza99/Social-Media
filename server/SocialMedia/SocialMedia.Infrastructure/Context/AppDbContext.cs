@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialMedia.Domain.Entity;
+using SocialMedia.Domain.Entities;
 using SocialMedia.Infrastructure.Context.Mappings;
 
 namespace SocialMedia.Infrastructure.Context
@@ -9,7 +9,7 @@ namespace SocialMedia.Infrastructure.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<RepostHistory> RepostHistories { get; set; }
-        public DbSet<UserDailyPostLimit> UserDailyPostLimits { get; set; }
+        public DbSet<UserDailyPostCount> UserDailyPostCounts { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -19,7 +19,7 @@ namespace SocialMedia.Infrastructure.Context
             modelBuilder.ApplyConfiguration(new UserMap());
             modelBuilder.ApplyConfiguration(new PostMap());
             modelBuilder.ApplyConfiguration(new RepostHistoryMap());
-            modelBuilder.ApplyConfiguration(new UserDailyPostLimitMap());
+            modelBuilder.ApplyConfiguration(new UserDailyPostCountMap());
 
 
             modelBuilder.Entity<User>().HasData(

@@ -1,5 +1,5 @@
 ﻿
-namespace SocialMedia.Domain.Entity
+namespace SocialMedia.Domain.Entities
 {
     public class Post
     {

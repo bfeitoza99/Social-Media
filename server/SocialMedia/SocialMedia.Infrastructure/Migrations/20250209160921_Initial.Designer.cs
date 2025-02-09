@@ -12,7 +12,7 @@ using SocialMedia.Infrastructure.Context;
 namespace SocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250208234327_Initial")]
+    [Migration("20250209160921_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -65,6 +65,8 @@ namespace SocialMedia.Infrastructure.Migrations
                     b.HasIndex("AuthorNickname");
 
                     b.HasIndex("AuthorUserId");
+
+                    b.HasIndex("OriginalPostId");
 
                     b.ToTable("Posts");
                 });
@@ -149,7 +151,7 @@ namespace SocialMedia.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostLimit", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostCount", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -162,7 +164,7 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.HasKey("UserId", "ReferenceDate");
 
-                    b.ToTable("UserDailyPostLimits");
+                    b.ToTable("UserDailyPostCounts");
                 });
 
             modelBuilder.Entity("SocialMedia.Domain.Entity.Post", b =>
@@ -179,6 +181,13 @@ namespace SocialMedia.Infrastructure.Migrations
                         .HasForeignKey("AuthorUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SocialMedia.Domain.Entity.Post", "OriginalPost")
+                        .WithMany()
+                        .HasForeignKey("OriginalPostId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("OriginalPost");
                 });
 
             modelBuilder.Entity("SocialMedia.Domain.Entity.RepostHistory", b =>
@@ -196,7 +205,7 @@ namespace SocialMedia.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostLimit", b =>
+            modelBuilder.Entity("SocialMedia.Domain.Entity.UserDailyPostCount", b =>
                 {
                     b.HasOne("SocialMedia.Domain.Entity.User", null)
                         .WithMany()

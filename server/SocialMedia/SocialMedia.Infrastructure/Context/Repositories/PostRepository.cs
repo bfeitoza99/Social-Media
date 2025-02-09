@@ -1,11 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SocialMedia.Domain.Entity;
+﻿using SocialMedia.Domain.Entities;
 using SocialMedia.Domain.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMedia.Infrastructure.Context.Repositories
 {
