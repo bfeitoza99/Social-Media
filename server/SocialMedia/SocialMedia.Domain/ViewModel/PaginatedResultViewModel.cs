@@ -1,7 +1,7 @@
 ﻿
 namespace SocialMedia.Domain.DTO
 {
-    public class PaginatedResult<T>
+    public class PaginatedResultViewModel<T>
     {
         public List<T> Items { get; set; } = new();
         public int TotalCount { get; set; }

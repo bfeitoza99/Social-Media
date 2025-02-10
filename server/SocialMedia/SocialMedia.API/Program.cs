@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocialMedia.Application.Validators;
 using SocialMedia.CrossCutting.DependencyInjection;
@@ -7,10 +6,11 @@ using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString =  Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") 
+            ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = "Host=localhost;Port=5432;Database=SocialMedia;Username=docker;Password=docker";
-
     options.UseNpgsql(connectionString!, x =>
     {
         x.MigrationsAssembly("SocialMedia.Infrastructure");
@@ -50,8 +50,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+AddMigrations(app);
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+static void AddMigrations(WebApplication app)
+{
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        context.Database.Migrate();
+    }
+}

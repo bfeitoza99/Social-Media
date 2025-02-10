@@ -10,7 +10,7 @@ namespace SocialMedia.Domain.Interfaces.Services
         Task AddPostAsync(string content, int authorUserId);
         Task AddRepostAsync(int originalPostId,  int authorUserId);
 
-        Task<PaginatedResult<PostResponseDTO>> FindPostsAsync();
+        Task<PaginatedResultViewModel<PostResponseViewModel>> FindPostsAsync();
 
         IPostService SetKeyword(string keyword);
 

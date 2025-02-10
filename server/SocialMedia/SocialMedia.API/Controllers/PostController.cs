@@ -11,7 +11,7 @@ namespace SocialMedia.API.Controllers
     public class PostController : Controller
     {
         [HttpGet]
-        [ProducesResponseType<PaginatedResult<PostResponseDTO>>(StatusCodes.Status200OK)]
+        [ProducesResponseType<PaginatedResultViewModel<PostResponseViewModel>>(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPosts(
             [FromServices] IPostService postService,
             [FromQuery] int page = 1,

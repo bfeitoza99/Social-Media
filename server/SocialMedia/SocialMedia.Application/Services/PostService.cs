@@ -41,7 +41,9 @@ namespace SocialMedia.Application.Services
             _postRepository = postRepository;
             _repostHistoryService = repostHistoryService;
             _mediator = mediator;
-            _dailyPostLimit = 5;
+            _dailyPostLimit = int.TryParse(Environment.GetEnvironmentVariable("DAILY_POST_LIMIT"), out var limit)
+             ? limit
+             : 5;
             _postFactory = postFactory;
         }
 
