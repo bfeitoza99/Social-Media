@@ -1,26 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Avatar from "./avatar";
-import { useUserStore } from "@/store/userStore";
-import { useCreatePost } from "@/hooks/useCreatePost";
+import { useNewPost } from "@/hooks/useNewPost";
 
 const NewPost = () => {
-  const [content, setContent] = useState("");
-
-  const { selectedUser } = useUserStore();
-
-  const mutation = useCreatePost();
-
-  const handleSumit = () => {
-    if (!selectedUser || content.trim() === "" || content.length > 777) return;
-
-    mutation.mutate({
-      content,
-      authorUserId: selectedUser.id,
-    });
-  };
-
+  const { content, setContent, handleSubmit, isPosting, selectedUser } = useNewPost();
   return (
     <div className="border-b border-neutral-800 pt-4 pb-2 flex space-x-4 pl-2">
       {selectedUser && <Avatar src={selectedUser.profileImageUrl} />}
@@ -43,8 +27,8 @@ const NewPost = () => {
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-blue-600"
             }`}
-            disabled={content.trim() === ""}
-            onClick={() => handleSumit()}
+            disabled={content.trim() === ""|| isPosting }
+            onClick={() => handleSubmit()}
           >
             Post
           </button>

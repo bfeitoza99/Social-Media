@@ -41,8 +41,8 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3)")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<bool>("IsRepost")
                         .HasColumnType("boolean");

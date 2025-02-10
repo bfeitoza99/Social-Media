@@ -12,18 +12,18 @@ namespace SocialMedia.API.Controllers
         [HttpGet]
         [ProducesResponseType<PaginatedResult<PostResponseDTO>>(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPosts(
-            [FromServices] IPostRepository postRepository,
+            [FromServices] IPostService postService,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 15,
             [FromQuery] string? keyword = null,
             [FromQuery] string orderBy = "latest")
         {
-            var result = await postRepository
+            var result = await postService
                 .SetKeyword(keyword)
                 .SetPageSize(pageSize)
                 .SetPage(page)
                 .SetOrderBy(orderBy)
-                .GetPostsAsync();
+                .FindPostsAsync();
 
             return Ok(result);
         }

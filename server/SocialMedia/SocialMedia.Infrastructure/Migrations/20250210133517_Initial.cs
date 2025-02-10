@@ -37,7 +37,7 @@ namespace SocialMedia.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "character varying(777)", maxLength: 777, nullable: false),
                     AuthorUserId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'"),
                     RepostCount = table.Column<int>(type: "integer", nullable: false),
                     IsRepost = table.Column<bool>(type: "boolean", nullable: false),
                     OriginalPostId = table.Column<int>(type: "integer", nullable: true)

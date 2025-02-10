@@ -12,7 +12,7 @@ using SocialMedia.Infrastructure.Context;
 namespace SocialMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250209200708_Initial")]
+    [Migration("20250210133517_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -44,8 +44,8 @@ namespace SocialMedia.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3)")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
 
                     b.Property<bool>("IsRepost")
                         .HasColumnType("boolean");

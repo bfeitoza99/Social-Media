@@ -36,7 +36,7 @@ export async function createRepost(postData: {
   const payload = { authorUserId: postData.authorUserId };
 
   const response = await axios.post(
-    `${API_URL}/repost/${postData.originalPostId}`,
+    `${API_URL}/${postData.originalPostId}/repost`,
     payload
   );
 

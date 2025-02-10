@@ -21,9 +21,9 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .HasMaxLength(777);
 
             builder.Property(p => p.CreatedAt)
-                .HasColumnType("timestamp(3)")
-                .HasDefaultValueSql("NOW()") 
-                .IsRequired();
+                 .HasColumnType("timestamp(3) with time zone")
+                 .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'")
+                 .IsRequired();
 
 
             builder.Property(p => p.RepostCount)
@@ -36,7 +36,7 @@ namespace SocialMedia.Infrastructure.Context.Mappings
                 .IsRequired(false);
 
             builder.Property(p => p.AuthorUserId)
-               .IsRequired();         
+               .IsRequired();
 
             builder.HasOne(p => p.User)
                  .WithMany(u => u.Posts)
