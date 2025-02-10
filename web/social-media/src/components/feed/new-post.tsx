@@ -3,14 +3,26 @@
 import { useState } from "react";
 import Avatar from "./avatar";
 import { useUserStore } from "@/store/userStore";
+import { useCreatePost } from "@/hooks/useCreatePost";
 
 const NewPost = () => {
   const [content, setContent] = useState("");
 
   const { selectedUser } = useUserStore();
 
+  const mutation = useCreatePost();
+
+  const handleSumit = () => {
+    if (!selectedUser || content.trim() === "" || content.length > 777) return;
+
+    mutation.mutate({
+      content,
+      authorUserId: selectedUser.id,
+    });
+  };
+
   return (
-    <div className="border-b border-neutral-800 pt-4 pb-2 flex space-x-4">
+    <div className="border-b border-neutral-800 pt-4 pb-2 flex space-x-4 pl-2">
       {selectedUser && <Avatar src={selectedUser.profileImageUrl} />}
 
       <div className="flex flex-col w-full">
@@ -19,10 +31,12 @@ const NewPost = () => {
           rows={3}
           placeholder="What's happening?!"
           value={content}
+          maxLength={777}
           onChange={(e) => setContent(e.target.value)}
         />
 
         <div className="flex items-center mt-3 border-t border-neutral-800 pt-3">
+          <span className="text-gray-500 text-sm">{content.length}/777</span>
           <button
             className={`ml-auto bg-blue-500 text-white font-bold px-6 py-2 rounded-full transition ${
               content.trim() === ""
@@ -30,6 +44,7 @@ const NewPost = () => {
                 : "hover:bg-blue-600"
             }`}
             disabled={content.trim() === ""}
+            onClick={() => handleSumit()}
           >
             Post
           </button>

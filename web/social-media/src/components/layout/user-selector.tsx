@@ -17,10 +17,9 @@ const UserSelector: React.FC = () => {
   if (!users || users.length === 0) return null;
 
   return (
-    <div className="border-b-[1px] border-neutral-800 p-5">
-      <div className="flex justify-between items-center w-full">
+    <div className="border-b border-neutral-800 p-5">
+      <div className="flex justify-center items-center w-full space-x-6">
         <h1 className="text-white text-xl ">Select User:</h1>
-
         <div className="relative">
           <select
             className="bg-neutral-800 text-white border border-neutral-700 rounded px-3 py-2"

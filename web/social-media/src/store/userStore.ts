@@ -1,7 +1,6 @@
-import { User } from "@/services/user-service";
+
+import { User } from "@/type/api/user";
 import { create } from "zustand";
-
-
 
 interface UserStore {
   selectedUser: User | null;

@@ -1,11 +1,6 @@
+import { createPost } from "@/services/post-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-
-const API_URL = "http://localhost:5099/api/Post";
-
-async function createPost(newPost: { content: string; authorUserId: number }) {
-  await axios.post(API_URL, newPost);
-}
+import { toast } from "react-hot-toast";
 
 export function useCreatePost() {
   const queryClient = useQueryClient();
@@ -13,7 +8,15 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: createPost,
     onSuccess: () => {
-      queryClient.invalidateQueries(); 
+        toast.dismiss("post-success"); 
+        toast.success("Your post has been created!", { id: "post-success" });
+      queryClient.refetchQueries({ queryKey: ["posts"] });
+    },
+    onError: (error: any) => {
+        toast.dismiss("post-error"); 
+
+        const errorMessage = error?.response?.data?.message || error.message;
+        toast.error(errorMessage, { id: "post-error" });
     },
   });
 }

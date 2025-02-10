@@ -26,7 +26,7 @@ const Feed = () => {
 
     observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [hasNextPage, fetchNextPage]);
+  }, [hasNextPage, fetchNextPage]);  
 
   return (
     <div className="w-full">
@@ -35,6 +35,8 @@ const Feed = () => {
       <NewPost />
 
       <SearchBar/>
+
+      
       
       {data?.pages.map((page) =>
         page.posts.map((post: any) => <Post key={post.id} {...post} />)
