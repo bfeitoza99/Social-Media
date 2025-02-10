@@ -1,25 +1,45 @@
 "use client";
 
-import { usePosts } from "../../hooks/usePosts";
+import { useInfinitePosts } from "@/hooks/useInfinitePosts";
+import { useEffect, useRef } from "react";
 import Post from "./post";
 import NewPost from "./new-post";
 
-const  Feed  = () => {
-  const { data: posts, isLoading, error } = usePosts();
+const Feed = () => {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfinitePosts();
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  if (isLoading) return <p className="text-center text-gray-400">Loading...</p>;
+  useEffect(() => {
+    if (!observerRef.current || !hasNextPage) return;
 
-  if (error)
-    return <p className="text-center text-red-500">Failed to load posts</p>;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "100px" }
+    );
+
+    observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
 
   return (
-    <div className="max-w-2xl mx-auto py-6 space-y-4">
+    <div className="w-full">
       <NewPost />
-      {posts?.map((post: any) => (
-        <Post key={post.id} {...post} />
-      ))}
+      {data?.pages.map((page) =>
+        page.posts.map((post) => <Post key={post.id} {...post} />)
+      )}
+
+      <div ref={observerRef} className="h-10"></div>
+
+      {isFetchingNextPage && (
+        <p className="text-center text-gray-500">Loading more...</p>
+      )}
     </div>
   );
-}
+};
 
 export default Feed;
