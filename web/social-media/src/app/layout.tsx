@@ -1,4 +1,3 @@
-import Sidebar from "@/components/layout/sidebar";
 import "../styles/globals.css";
 import { Providers } from "./providers";
 
@@ -10,19 +9,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black text-white">
-        <div className="flex justify-center">
-          <div className="hidden md:flex fixed top-0 left-0 h-screen w-64 px-4">
-            <Sidebar />
-          </div>
+        <Providers>
+          <div className="flex justify-center">
+            <div className="flex w-full max-w-[1100px] justify-center">
+              <main className="flex-1 w-full md:max-w-[1000px] min-h-screen mx-4">
+                {children}
+              </main>
 
-          <div className="flex w-full max-w-[1200px]">
-            <main className="flex-1 w-full md:w-[600px] min-h-screen">
-              <Providers>{children}</Providers>
-            </main>
-
-            <aside className="hidden lg:flex w-80 px-4 h-screen fixed right-0 top-0"></aside>
+              <aside className="hidden lg:flex w-72 px-2 h-screen fixed right-0 top-0"></aside>
+            </div>
           </div>
-        </div>
+        </Providers>
       </body>
     </html>
   );

@@ -4,6 +4,8 @@ import { useInfinitePosts } from "@/hooks/useInfinitePosts";
 import { useEffect, useRef } from "react";
 import Post from "./post";
 import NewPost from "./new-post";
+import Filter from "./filter/filter";
+import SearchBar from "./filter/search-bar";
 
 const Feed = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -28,9 +30,14 @@ const Feed = () => {
 
   return (
     <div className="w-full">
+      <Filter />
+
       <NewPost />
+
+      <SearchBar/>
+      
       {data?.pages.map((page) =>
-        page.posts.map((post) => <Post key={post.id} {...post} />)
+        page.posts.map((post: any) => <Post key={post.id} {...post} />)
       )}
 
       <div ref={observerRef} className="h-10"></div>

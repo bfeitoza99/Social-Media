@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import Avatar from "./avatar";
+import { useUserStore } from "@/store/userStore";
 
 const NewPost = () => {
   const [content, setContent] = useState("");
 
+  const { selectedUser } = useUserStore();
+
   return (
-    <div className="border-b border-neutral-800 p-4 flex space-x-4">
-      <Avatar src="https://i.pravatar.cc/50" />
+    <div className="border-b border-neutral-800 pt-4 pb-2 flex space-x-4">
+      {selectedUser && <Avatar src={selectedUser.profileImageUrl} />}
 
       <div className="flex flex-col w-full">
         <textarea
