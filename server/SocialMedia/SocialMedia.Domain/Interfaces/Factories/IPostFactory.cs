@@ -10,7 +10,7 @@ namespace SocialMedia.Domain.Interfaces.Factories
 {
     public interface IPostFactory
     {
-        Post CreatePost(CreatePostDTO model);
-        Post CreateRepost(int originalPostid, CreateRepostDTO model);
+        Post CreatePost(string content, int authorUserId);
+        Post CreateRepost(int originalPostId, int authorUserId);
     }
 }

@@ -1,15 +1,14 @@
 ﻿using SocialMedia.Domain.DTO;
+using SocialMedia.Domain.Enums;
 using SocialMedia.Domain.Interfaces.Repositories;
 
 namespace SocialMedia.Domain.Interfaces.Services
 {
-    public interface IPostService : IPaginateService<IPostService>
+    public interface IPostService : IPaginateService<IPostService, PostOrderBy>
     {
 
-        Task AddPostAsync(CreatePostDTO createPostDTO);
-
-
-        Task AddRepostAsync(int originalPostId, CreateRepostDTO repostDTO);
+        Task AddPostAsync(string content, int authorUserId);
+        Task AddRepostAsync(int originalPostId,  int authorUserId);
 
         Task<PaginatedResult<PostResponseDTO>> FindPostsAsync();
 

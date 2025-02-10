@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SocialMedia.Domain.DTO;
+using SocialMedia.Application.DTO;
 
 namespace SocialMedia.Application.Validators
 {

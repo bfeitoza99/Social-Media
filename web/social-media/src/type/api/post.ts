@@ -27,3 +27,8 @@ export interface OriginalPostDTO {
     page: number;
     pageSize: number;
   }
+
+  export enum PostOrderBy {
+    Latest = 1,
+    Trending = 2,
+  }

@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SocialMedia.Domain.DTO
+﻿
+namespace SocialMedia.Application.DTO
 {
     public class CreatePostDTO
     {

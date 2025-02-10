@@ -7,11 +7,12 @@ using SocialMedia.Domain.Interfaces.Factories;
 using SocialMedia.Domain.Interfaces.Repositories;
 using SocialMedia.Domain.Interfaces.Services;
 using Microsoft.EntityFrameworkCore;
+using SocialMedia.Domain.Enums;
 
 
 namespace SocialMedia.Application.Services
 {
-    public class PostService: IPostService
+    public class PostService : IPostService
     {
         private readonly IUserDailyPostCountService _userDailyPostLimitService;
         private readonly IPostRepository _postRepository;
@@ -26,12 +27,12 @@ namespace SocialMedia.Application.Services
         private readonly int _dailyPostLimit;
 
         private string _keyword;
-        private string _orderBy;
+        private PostOrderBy _orderBy;
         private int _page;
         private int _pageSize;
 
-        public PostService(IUserDailyPostCountService userDailyPostLimitService, 
-            IPostRepository postRepository, 
+        public PostService(IUserDailyPostCountService userDailyPostLimitService,
+            IPostRepository postRepository,
             IRepostHistoryService repostHistoryService,
             IMediator mediator,
             IPostFactory postFactory)
@@ -44,26 +45,26 @@ namespace SocialMedia.Application.Services
             _postFactory = postFactory;
         }
 
-        public async Task AddPostAsync(CreatePostDTO createPostDTO)
+        public async Task AddPostAsync(string content, int authorUserId)
         {
-            await ValidateDailyPostLimit(createPostDTO.AuthorUserId);
+            await ValidateDailyPostLimit(authorUserId);
 
-            await _postRepository.AddAsync(_postFactory.CreatePost(createPostDTO));
+            await _postRepository.AddAsync(_postFactory.CreatePost(content, authorUserId));
 
-            await _mediator.Publish(new UpdateDailyPostCountEvent(createPostDTO.AuthorUserId, _currentDate));
-        }     
+            await _mediator.Publish(new UpdateDailyPostCountEvent(authorUserId, _currentDate));
+        }
 
-        public async Task AddRepostAsync(int originalPostId, CreateRepostDTO repostDTO)
+        public async Task AddRepostAsync(int originalPostId, int authorUserId)
         {
-            await ValidateDailyPostLimit(repostDTO.AuthorUserId);
-            await ValidateRepost(originalPostId , repostDTO);
+            await ValidateDailyPostLimit(authorUserId);
+            await ValidateRepost(originalPostId, authorUserId);
 
-            await _postRepository.AddAsync(_postFactory.CreateRepost(originalPostId, repostDTO));
+            await _postRepository.AddAsync(_postFactory.CreateRepost(originalPostId, authorUserId));
 
-            await PublishRepostEvents(originalPostId, repostDTO.AuthorUserId);
+            await PublishRepostEvents(originalPostId, authorUserId);
 
         }
-       
+
         private async Task PublishRepostEvents(int originalPostId, int userId)
         {
             await _mediator.Publish(new UpdateDailyPostCountEvent(userId, _currentDate));
@@ -71,9 +72,9 @@ namespace SocialMedia.Application.Services
             await _mediator.Publish(new UpdateRepostHistoryEvent(userId, originalPostId));
         }
 
-        private async Task ValidateRepost(int originalPostId,  CreateRepostDTO repostDTO)
+        private async Task ValidateRepost(int originalPostId, int authorUserId)
         {
-            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(repostDTO.AuthorUserId, originalPostId);
+            var existedRepost = await _repostHistoryService.FindRepostHistoryByUserAndPostAsync(authorUserId, originalPostId);
 
             if (existedRepost != null)
             {
@@ -103,7 +104,7 @@ namespace SocialMedia.Application.Services
             return this;
         }
 
-        public IPostService SetOrderBy(string orderBy)
+        public IPostService SetOrderBy(PostOrderBy orderBy)
         {
             _orderBy = orderBy;
             return this;
@@ -121,30 +122,26 @@ namespace SocialMedia.Application.Services
             return this;
         }
 
-        public async Task<PaginatedResult<PostResponseDTO>> FindPostsAsync()
+        public async Task<PaginatedResultViewModel<PostResponseViewModel>> FindPostsAsync()
         {
-            var posts =  _postRepository.FindAllPosts();
-         
+            var posts = _postRepository.FindAllPosts();
+
             if (!string.IsNullOrEmpty(_keyword))
             {
                 posts = posts.Where(p => p.Content.Contains(_keyword));
             }
 
-            if (_orderBy == "trending")
-            {
-                posts = posts.OrderByDescending(p => p.RepostCount);
-            }
-            else
-            {
-                posts = posts.OrderByDescending(p => p.CreatedAt);
-            }
+            posts = _orderBy == PostOrderBy.Latest
+           ? posts.OrderByDescending(p => p.CreatedAt)
+           : posts.OrderByDescending(p => p.RepostCount);
+
 
             var totalPosts = await posts.CountAsync();
 
             var pagedPosts = await posts
                 .Skip((_page - 1) * _pageSize)
                 .Take(_pageSize)
-                .Select(p => new PostResponseDTO
+                .Select(p => new PostResponseViewModel
                 {
                     Id = p.Id,
                     Content = p.Content,
@@ -154,7 +151,7 @@ namespace SocialMedia.Application.Services
                     CreatedAt = p.CreatedAt,
                     RepostCount = p.RepostCount,
                     IsRepost = p.IsRepost,
-                    OriginalPost = p.OriginalPostId.HasValue ? new OriginalPostDTO
+                    OriginalPost = p.OriginalPostId.HasValue ? new OriginalPostViewModel
                     {
                         Id = p.OriginalPost.Id,
                         Content = p.OriginalPost.Content,
@@ -168,7 +165,7 @@ namespace SocialMedia.Application.Services
                 }).ToListAsync();
 
 
-            return new PaginatedResult<PostResponseDTO>
+            return new PaginatedResultViewModel<PostResponseViewModel>
             {
                 Items = pagedPosts,
                 TotalCount = totalPosts,

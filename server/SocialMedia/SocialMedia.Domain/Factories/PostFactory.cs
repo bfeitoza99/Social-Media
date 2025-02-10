@@ -6,21 +6,21 @@ namespace SocialMedia.Infrastructure.Factories
 {
     public class PostFactory : IPostFactory
     {
-        public Post CreatePost(CreatePostDTO model)
+        public Post CreatePost(string content, int authorUserId)
         {
             return new Post
             {                
-                AuthorUserId = model.AuthorUserId,
-                Content = model.Content           
-            
+                AuthorUserId = authorUserId,
+                Content = content
+
             };
         }
 
-        public Post CreateRepost(int originalPostId, CreateRepostDTO model)
+        public Post CreateRepost(int originalPostId, int authorUserId)
         {
             return new Post
             {              
-                AuthorUserId = model.AuthorUserId,
+                AuthorUserId = authorUserId,
                 Content =  "",
                 IsRepost = true,
                 OriginalPostId = originalPostId

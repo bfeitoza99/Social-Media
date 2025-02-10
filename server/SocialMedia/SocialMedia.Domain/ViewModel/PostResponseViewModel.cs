@@ -1,7 +1,7 @@
 ﻿
 namespace SocialMedia.Domain.DTO
 {
-    public class PostResponseDTO
+    public class PostResponseViewModel
     {
         public int Id { get; set; }
         public string Content { get; set; }
@@ -11,12 +11,12 @@ namespace SocialMedia.Domain.DTO
         public DateTime CreatedAt { get; set; } 
         public int RepostCount { get; set; } = 0;
         public bool IsRepost { get; set; } = false;
-        public OriginalPostDTO? OriginalPost {  get; set; }
+        public OriginalPostViewModel? OriginalPost {  get; set; }
 
     }
 
 
-    public class OriginalPostDTO
+    public class OriginalPostViewModel
     {
         public int Id { get; set; }
         public string Content { get; set; }

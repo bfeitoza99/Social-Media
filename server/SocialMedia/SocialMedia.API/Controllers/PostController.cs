@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SocialMedia.Application.DTO;
 using SocialMedia.Domain.DTO;
-using SocialMedia.Domain.Interfaces.Repositories;
+using SocialMedia.Domain.Enums;
 using SocialMedia.Domain.Interfaces.Services;
 
 namespace SocialMedia.API.Controllers
@@ -16,7 +17,7 @@ namespace SocialMedia.API.Controllers
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 15,
             [FromQuery] string? keyword = null,
-            [FromQuery] string orderBy = "latest")
+            [FromQuery] PostOrderBy orderBy = PostOrderBy.Latest)
         {
             var result = await postService
                 .SetKeyword(keyword)
@@ -37,7 +38,7 @@ namespace SocialMedia.API.Controllers
             if (!ModelState.IsValid)
                 return this.BadFormatModelStateResult();
 
-            await postService.AddPostAsync(model);
+            await postService.AddPostAsync(model.Content, model.AuthorUserId);
 
             return Ok();
         }
@@ -51,7 +52,7 @@ namespace SocialMedia.API.Controllers
             if (!ModelState.IsValid)
                 return this.BadFormatModelStateResult();
 
-            await postService.AddRepostAsync(originalPostId, model);
+            await postService.AddRepostAsync(originalPostId, model.AuthorUserId);
 
             return Ok();
         }

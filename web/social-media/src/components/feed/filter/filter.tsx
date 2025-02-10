@@ -1,6 +1,7 @@
 "use client";
 
 import { useFilterPostStore } from "@/store/useFilterPostStore";
+import { PostOrderBy } from "@/type/api/post";
 
 
 
@@ -11,18 +12,18 @@ const Filter = () => {
     <div className="flex border-b border-neutral-800 w-full">
       <button
         className={`flex-1 py-3 text-center text-white font-semibold ${
-          orderBy === "latest" ? "border-b-4 border-blue-500" : "text-gray-500"
+          orderBy === PostOrderBy.Latest ? "border-b-4 border-blue-500" : "text-gray-500"
         }`}
-        onClick={() => setOrderBy("latest")}
+        onClick={() => setOrderBy(PostOrderBy.Latest)}
       >
         Latest
       </button>
 
       <button
         className={`flex-1 py-3 text-center text-white font-semibold ${
-          orderBy === "trending" ? "border-b-4 border-blue-500" : "text-gray-500"
+          orderBy === PostOrderBy.Trending ? "border-b-4 border-blue-500" : "text-gray-500"
         }`}
-        onClick={() => setOrderBy("trending")}
+        onClick={() => setOrderBy(PostOrderBy.Trending)}
       >
         Trending
       </button>
