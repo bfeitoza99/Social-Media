@@ -52,12 +52,12 @@ Right now, the project relies on **Docker Compose**, which is ideal for **local 
 **Self-healing capabilities**, where failed containers are restarted automatically.  
 **Improved deployment strategies**, such as rolling updates and blue-green deployments.  
 
-### 🔹 4. Benefits of These Improvements  
+### 4. Benefits of These Improvements  
 By incorporating **unit tests, E2E tests, and a Kubernetes-based infrastructure**, the project would benefit from:  
 
 **Higher reliability** through automated testing and reduced risk of regressions.  
 **Improved scalability** by efficiently handling increased workloads.  
 **Better maintainability** with a structured **CI/CD pipeline**, ensuring smooth deployments.  
 
-### 🔹 Final Thoughts  
+### Final Thoughts  
 Implementing these improvements would make the system more **robust, scalable, and production-ready**, allowing it to support a **growing number of users** with minimal downtime and operational overhead. 🚀  
