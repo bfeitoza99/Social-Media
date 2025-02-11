@@ -1,7 +1,7 @@
 import { User } from "@/type/api/user";
 import axios from "axios";
 
-const API_URL = "http://localhost:5099/api/User";
+const API_URL = "http://localhost:8080/api/User";
 
 
 export async function fetchUsers() {

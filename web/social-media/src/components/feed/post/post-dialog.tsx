@@ -42,7 +42,7 @@ const PostModal: React.FC<PostModalProps> = ({
       <DialogTitle
         sx={{ color: "#F9FAFB", fontWeight: "bold", fontSize: "18px" }}
       >
-        {authorNickname}'s Post
+        {authorNickname}&rsquo;s Post
       </DialogTitle>
       <DialogContent>
         <p style={{ color: "#D1D5DB", fontSize: "14px" }}>{content}</p>

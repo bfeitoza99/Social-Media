@@ -1,5 +1,6 @@
 import { createRepost } from "@/services/post-service";
 import { useUserStore } from "@/store/userStore";
+import { APIError } from "@/type/api/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
@@ -18,7 +19,7 @@ export function useCreateRepost() {
       toast.success("Your repost has been created!", { id: "repost-success" });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
-    onError: (error: any) => {
+    onError: (error: APIError) => {
       toast.dismiss("repost-error");
       const errorMessage = error?.response?.data?.message || error.message;
       toast.error(errorMessage, { id: "repost-error" });

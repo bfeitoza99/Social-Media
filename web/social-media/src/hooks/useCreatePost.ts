@@ -1,5 +1,6 @@
 import { createPost } from "@/services/post-service";
 import { useUserStore } from "@/store/userStore";
+import { APIError } from "@/type/api/error";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
@@ -18,7 +19,7 @@ export function useCreatePost() {
         toast.success("Your post has been created!", { id: "post-success" });
       queryClient.refetchQueries({ queryKey: ["posts"] });
     },
-    onError: (error: any) => {
+    onError: (error: APIError) => {
         toast.dismiss("post-error"); 
 
         const errorMessage = error?.response?.data?.message || error.message;

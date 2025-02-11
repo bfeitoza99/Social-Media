@@ -6,6 +6,7 @@ import Post from "./post";
 import NewPost from "./new-post";
 import Filter from "./filter/filter";
 import SearchBar from "./filter/search-bar";
+import { PostResponseDTO } from "@/type/api/post";
 
 const Feed = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -31,15 +32,11 @@ const Feed = () => {
   return (
     <div className="w-full">
       <Filter />
-
       <NewPost />
-
-      <SearchBar/>
-
-      
+      <SearchBar/>      
       
       {data?.pages.map((page) =>
-        page.posts.map((post: any) => <Post key={post.id} {...post} />)
+        page.posts.map((post: PostResponseDTO) => <Post key={post.id} {...post} />)
       )}
 
       <div ref={observerRef} className="h-10"></div>

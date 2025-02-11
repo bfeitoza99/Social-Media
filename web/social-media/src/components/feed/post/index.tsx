@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { Repeat } from "lucide-react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
 import { usePostActions } from "@/hooks/usePostActions";
 import { PostResponseDTO } from "@/type/api/post";
 import Avatar from "../avatar";

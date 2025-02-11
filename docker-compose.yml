@@ -1,17 +1,43 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
-    image: postgres
-    container_name: social-media_db
+  socialmedia-api:
+    build:
+      context: ./server/SocialMedia
+      dockerfile: Dockerfile
+    container_name: socialmedia-api
     ports:
-      - '5432:5432'
+      - "8080:8080"     
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DATABASE_CONNECTION_STRING=Host=postgres-db;Port=5432;Database=SocialMedia;Username=docker;Password=docker
+      - DAILY_POST_LIMIT=5
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres
+    container_name: socialmedia-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: SocialMedia
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: SocialMedia
+    ports:
+      - "5432:5432"
     volumes:
-      - db:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+
+  socialmedia-frontend:
+    build:
+      context: ./web/social-media
+      dockerfile: Dockerfile
+    container_name: socialmedia-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - socialmedia-api
+
 volumes:
-  db:
-    driver: local
+  postgres_data:

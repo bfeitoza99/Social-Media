@@ -1,11 +1,11 @@
-import { PaginatedPosts } from "@/type/api/post";
+import { PaginatedPosts, PostOrderBy } from "@/type/api/post";
 import axios from "axios";
 
-const API_URL = "http://localhost:5099/api/Post";
+const API_URL = "http://localhost:8080/api/Post";
 
 
 export async function fetchPosts(
-  orderBy: "latest" | "trending",
+  orderBy: PostOrderBy,
   keyword: string,
   pageParam: number = 1
 ) {
