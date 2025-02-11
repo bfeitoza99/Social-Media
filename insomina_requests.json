@@ -1,0 +1,56 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-02-10T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.1.0",
+  "resources": [
+    {
+      "_id": "req_get_posts",
+      "_type": "request",
+      "name": "Get Posts",
+      "method": "GET",
+      "url": "http://localhost:8080/api/Post",
+      "parameters": [
+        { "name": "page", "value": "1" },
+        { "name": "pageSize", "value": "15" },
+        { "name": "keyword", "value": "" },
+        { "name": "orderBy", "value": "1" }
+      ]
+    },
+    {
+      "_id": "req_create_post",
+      "_type": "request",
+      "name": "Create Post",
+      "method": "POST",
+      "url": "http://localhost:8080/api/Post",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{ \"content\": \"New Post\", \"authorUserId\": 1 }"
+      }
+    },
+    {
+      "_id": "req_repost",
+      "_type": "request",
+      "name": "Repost",
+      "method": "POST",
+      "url": "http://localhost:8080/api/Post/1/repost",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{ \"authorUserId\": 1 }"
+      }
+    },
+    {
+      "_id": "req_get_users",
+      "_type": "request",
+      "name": "Get Users",
+      "method": "GET",
+      "url": "http://localhost:8080/api/User"
+    }
+  ]
+}

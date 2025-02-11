@@ -17,7 +17,7 @@ This project simulates a social media using a backend built with .NET 8 and a fr
 3. After the services are up, access the application:
 
 - **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend API**: [http://localhost:8001](http://localhost:8001)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
 
 
 ## Project Structure
@@ -27,6 +27,7 @@ socialMedia/
 ├── server/SocialMedia/ # Backend API built with .NET 8
 ├── web/social-media/   # Frontend built with React (NextJs)
 ├── docker-compose.yml  # Docker configuration file
+└── insomina_requests.json # Requests helper
 └── README.md           # Documentation
 </pre>
 
