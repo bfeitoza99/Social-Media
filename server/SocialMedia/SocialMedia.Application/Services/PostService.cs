@@ -126,17 +126,7 @@ namespace SocialMedia.Application.Services
 
         public async Task<PaginatedResultViewModel<PostResponseViewModel>> FindPostsAsync()
         {
-            var posts = _postRepository.FindAllPosts();
-
-            if (!string.IsNullOrEmpty(_keyword))
-            {
-                posts = posts.Where(p => p.Content.Contains(_keyword));
-            }
-
-            posts = _orderBy == PostOrderBy.Latest
-           ? posts.OrderByDescending(p => p.CreatedAt)
-           : posts.OrderByDescending(p => p.RepostCount);
-
+            var posts = ApplyFilters(_postRepository.FindAllPosts());
 
             var totalPosts = await posts.CountAsync();
 
@@ -164,8 +154,8 @@ namespace SocialMedia.Application.Services
                         RepostCount = p.OriginalPost.RepostCount,
                         IsRepost = false
                     } : null
-                }).ToListAsync();
-
+                })
+                .ToListAsync();
 
             return new PaginatedResultViewModel<PostResponseViewModel>
             {
@@ -174,6 +164,18 @@ namespace SocialMedia.Application.Services
                 Page = _page,
                 PageSize = _pageSize
             };
+        }
+
+        private IQueryable<Post> ApplyFilters(IQueryable<Post> posts)
+        {
+            if (!string.IsNullOrEmpty(_keyword))
+            {
+                posts = posts.Where(p => p.Content.Contains(_keyword));
+            }
+
+            return _orderBy == PostOrderBy.Latest
+                ? posts.OrderByDescending(p => p.CreatedAt)
+                : posts.OrderByDescending(p => p.RepostCount);
         }
 
     }

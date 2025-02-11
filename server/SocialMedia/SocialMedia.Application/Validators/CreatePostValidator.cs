@@ -13,7 +13,7 @@ namespace SocialMedia.Application.Validators
                 .MaximumLength(777).WithMessage("Content cannot exceed 777 characters.");
 
             RuleFor(p => p.AuthorUserId)
-               .NotEmpty().WithMessage("Author nickname is required.");
+               .NotEmpty().WithMessage("AuthorUserId  is required.");
         }
     }
 }

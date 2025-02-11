@@ -8,7 +8,7 @@ namespace SocialMedia.Application.Validators
         public RepostValidator()
         {   
             RuleFor(p => p.AuthorUserId)
-               .NotEmpty().WithMessage("Author nickname is required.");
+               .NotEmpty().WithMessage("AuthorUserId  is required.");
         }
     }
 }
