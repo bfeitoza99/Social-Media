@@ -21,10 +21,11 @@ This project simulates a social media using a backend built with .NET 8 and a fr
 
 
 ## Project Structure
-
-social-media-project/ │ 
-├── server/SocialMedia/ # Backend application 
-├── web/social-media/ # Frontend application │ 
-├── .gitignore # Git ignore file 
-├── README.md # Project documentation 
-└── docker-compose.yml # Docker configuration file
+<pre>
+polyline-station-offset-calculator/
+│
+├── server/SocialMedia/ # Backend API built with .NET 8
+├── web/social-media/   # Frontend built with Angular
+├── docker-compose.yml  # Docker configuration file
+└── README.md           # Documentation
+</pre>
