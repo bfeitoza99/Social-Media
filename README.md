@@ -22,7 +22,7 @@ This project simulates a social media using a backend built with .NET 8 and a fr
 
 ## Project Structure
 <pre>
-polyline-station-offset-calculator/
+socialMedia/
 │
 ├── server/SocialMedia/ # Backend API built with .NET 8
 ├── web/social-media/   # Frontend built with Angular
