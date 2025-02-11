@@ -1,13 +1,16 @@
-How to Run the Project
-Method 1: Using Docker
-Prerequisites
-Ensure Docker is installed and running on your machine.
-Steps
-Navigate to the root directory of the project where the docker-compose.yml file is located.
+# Social Media
 
-Run the following command in your terminal: docker-compose up -d
+This project simulates a social media using a backend built with .NET 8 and a frontend built with Angular.
 
-After the services are up, access the application:
+## 🔗 How to Run the Project
 
-Frontend: http://localhost:3000
-Backend API: http://localhost:8001
+### Using Docker
+
+#### Prerequisites
+- Ensure **Docker** is installed and running on your machine.
+
+#### Steps
+1. Navigate to the root directory of the project where the `docker-compose.yml` file is located.
+2. Run the following command in your terminal:
+   ```sh
+   docker-compose up -d
